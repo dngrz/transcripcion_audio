@@ -4,10 +4,10 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY pom.xml .
+COPY transcripcion-gestion-backend/pom.xml .
 RUN mvn -B -q dependency:go-offline
 
-COPY src ./src
+COPY transcripcion-gestion-backend/src ./src
 RUN mvn -B -q clean package -DskipTests
 
 # ---------------------------------------------------------------------
