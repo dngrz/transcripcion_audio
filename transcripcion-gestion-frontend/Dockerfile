@@ -4,7 +4,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY transcripcion-gestion-frontend/package.json package-lock.json ./
+COPY transcripcion-gestion-frontend/package*.json ./
 RUN npm ci
 
 COPY transcripcion-gestion-frontend/. .
