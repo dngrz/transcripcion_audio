@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:transcripcion_gestion_test}
+    username: ${DB_USER:transcripcion}
+    password: ${DB_PASSWORD:transcripcion}
+    driver-class-name: org.postgresql.Driver
+
+security:
+  token-validation:
+    enabled: false
+
+logging:
+  level:
+    com.transcripcion.gestion: DEBUG

@@ -1,0 +1,74 @@
+services:
+  db:
+    build:
+      context: ./transcripcion_database
+    image: transcripcion-database:latest
+    container_name: transcripcion-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - transcripcion_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - transcripcion-net
+
+  backend:
+    build:
+      context: ./transcripcion-gestion-backend
+    image: transcripcion-backend:latest
+    container_name: transcripcion-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      SERVER_PORT: 8080
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      TOKEN_VALIDATION_ENABLED: ${TOKEN_VALIDATION_ENABLED:-true}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1/}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-transcribe}
+      OPENAI_LANGUAGE: ${OPENAI_LANGUAGE:-es}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+      APP_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@transcripcion.local}
+      APP_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin123*}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    networks:
+      - transcripcion-net
+
+  frontend:
+    build:
+      context: ./transcripcion-gestion-frontend
+    image: transcripcion-frontend:latest
+    container_name: transcripcion-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    networks:
+      - transcripcion-net
+
+volumes:
+  transcripcion_pgdata:
+
+networks:
+  transcripcion-net:
+    driver: bridge
