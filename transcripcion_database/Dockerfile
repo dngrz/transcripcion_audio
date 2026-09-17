@@ -7,6 +7,6 @@ FROM postgres:16-alpine
 
 ENV POSTGRES_INITDB_ARGS="--encoding=UTF8 --locale=C"
 
-COPY init/ /docker-entrypoint-initdb.d/
+COPY transcripcion_database/init/ /docker-entrypoint-initdb.d/
 
 EXPOSE 5432

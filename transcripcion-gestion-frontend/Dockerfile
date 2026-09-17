@@ -4,16 +4,16 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY transcripcion-gestion-frontend/package.json package-lock.json ./
 RUN npm ci
 
-COPY . .
+COPY transcripcion-gestion-frontend/. .
 RUN npm run build
 
 # ---------------------------------------------------------------------
 FROM nginx:1.27-alpine
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY transcripcion-gestion-frontend/docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/transcripcion-gestion-frontend/browser /usr/share/nginx/html
 
 EXPOSE 80
