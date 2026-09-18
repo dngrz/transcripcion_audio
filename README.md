@@ -7,6 +7,13 @@ OpenAI, revisar y corregir el texto, y conservar un historial de cambios.
 > El archivo de audio **nunca se almacena**: se procesa en memoria y se descarta.
 > En la base de datos solo se guardan metadata y el texto transcrito.
 
+## Demo Publicada
+
+| App | URL |
+|---|---|
+| Aplidativo Demo | [https://transcripcionaudio.up.railway.app/](https://transcripcionaudio.up.railway.app/) |
+
+![Imagen del Panel](imagen/transcripcion-audio.png)
 ## Arquitectura
 
 | Componente | Tecnologia | Carpeta |
